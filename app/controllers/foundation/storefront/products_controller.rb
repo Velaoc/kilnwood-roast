@@ -3,9 +3,13 @@
 module Foundation
   module Storefront
     class ProductsController < BaseController
+      ROAST_LEVELS = %w[light medium dark].freeze
+
       def index
         @page = Integer(params.fetch(:page, 1), 10, exception: false).to_i.clamp(1, 1_000)
-        rows = Product.catalog.offset((@page - 1) * 24).limit(25).with_attached_image.to_a
+        @roast = params[:roast].presence
+        @roast = nil unless ROAST_LEVELS.include?(@roast)
+        rows = Product.catalog.roasted(@roast).offset((@page - 1) * 24).limit(25).with_attached_image.to_a
         @has_next_page = rows.length > 24
         @products = rows.first(24)
       end
