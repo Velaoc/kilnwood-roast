@@ -59,8 +59,8 @@ class StorefrontCheckoutServicesTest < ActiveSupport::TestCase
     assert_equal @product.name, item.dig(:price_data, :product_data, :name)
     assert_equal @order.public_reference, gateway.attributes[:client_reference_id]
     assert_equal({ order_reference: @order.public_reference }, gateway.attributes[:metadata])
-    assert_match %r{\Ahttps://example\.com/storefront/orders/}, gateway.attributes[:success_url]
-    assert_equal "https://example.com/storefront/cart", gateway.attributes[:cancel_url]
+    assert_match %r{\Ahttps://kilnwood-roast\.api\.holode\.xyz/storefront/orders/}, gateway.attributes[:success_url]
+    assert_equal "https://kilnwood-roast.api.holode.xyz/storefront/cart", gateway.attributes[:cancel_url]
     assert_equal "storefront_order_#{@order.public_reference}", gateway.idempotency_key
     assert_operator gateway.attributes[:expires_at], :>=, 40.minutes.from_now.to_i
   end
@@ -299,9 +299,9 @@ class StorefrontCheckoutServicesTest < ActiveSupport::TestCase
     assert_raises(Foundation::RuntimeConfig::Invalid) do
       runtime_config({ "APP_HOST" => "https://other.example" }, rails_environment: :production)
     end
-    assert_equal "https://example.com",
+    assert_equal "https://kilnwood-roast.api.holode.xyz",
       Foundation::Storefront::StripeCheckoutSession.base_url(
-        runtime_config: runtime_config({ "APP_HOST" => "https://example.com" }, rails_environment: :production)
+        runtime_config: runtime_config({ "APP_HOST" => "https://kilnwood-roast.api.holode.xyz" }, rails_environment: :production)
       )
     preview = runtime_config({ "APP_HOST" => "preview.holodex.test", "VELA_HOLODEX_PREVIEW" => "1" })
     assert_equal "https://preview.holodex.test",
