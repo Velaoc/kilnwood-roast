@@ -53,7 +53,7 @@ class StorefrontReceiptDispatchTest < ActiveJob::TestCase
       Foundation::Storefront::OrderReceiptJob.perform_now(order.id)
       Foundation::Storefront::OrderReceiptJob.perform_now(order.id)
     end
-    assert_equal "storefront-order-#{order.public_reference}@example.com",
+    assert_equal "storefront-order-#{order.public_reference}@kilnwood-roast.api.holode.xyz",
       ActionMailer::Base.deliveries.last.message_id
   end
 end
