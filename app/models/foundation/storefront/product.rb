@@ -10,6 +10,7 @@ module Foundation
 
       IMAGE_TYPES = %w[image/png image/jpeg image/webp image/gif].freeze
       MAX_IMAGE_BYTES = 8.megabytes
+      ROAST_LEVELS = %w[light medium dark].freeze
 
       has_many :line_items, class_name: "Foundation::Storefront::LineItem",
         dependent: :restrict_with_error, inverse_of: :product
@@ -24,11 +25,13 @@ module Foundation
       validates :inventory_quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 1_000_000 }
       validates :position, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 1_000_000 }
       validates :currency, format: { with: /\A[A-Z]{3}\z/ }
+      validates :roast_level, inclusion: { in: ROAST_LEVELS, allow_blank: true }
       validate :safe_external_image_url
       validate :valid_image_attachment
       validate :one_image_source
 
       scope :catalog, -> { where(active: true).where("inventory_quantity > 0").order(:position, :name, :id) }
+      scope :roasted, ->(level) { level.present? ? where(roast_level: level) : all }
 
       def available?
         active? && inventory_quantity.positive?
@@ -46,6 +49,9 @@ module Foundation
         self.sku = sku.to_s.strip.upcase
         self.currency = currency.to_s.strip.upcase
         self.description = description.to_s.strip
+        self.origin = origin.to_s.strip.presence
+        self.tasting_notes = tasting_notes.to_s.strip.presence
+        self.roast_level = roast_level.to_s.strip.presence
         self.image_url = image_url.to_s.strip.presence
       end
 
