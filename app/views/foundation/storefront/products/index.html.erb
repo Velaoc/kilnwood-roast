@@ -22,11 +22,11 @@
             <% end %>
             <div class="md-stack storefront-product-card__body">
               <div>
-                <p class="storefront-product-card__meta"><%= product.roast_level&.titleize %> · <%= product.origin %></p>
+                <p class="storefront-product-card__meta"><%= product.try(:roast_level)&.titleize %> · <%= product.try(:origin) %></p>
                 <h2><%= link_to product.name, storefront_product_path(product.slug) %></h2>
                 <p><%= truncate(product.description, length: 150) %></p>
-                <% if product.tasting_notes.present? %>
-                  <p class="storefront-product-card__notes"><%= product.tasting_notes %></p>
+                <% if product.try(:tasting_notes).present? %>
+                  <p class="storefront-product-card__notes"><%= product.try(:tasting_notes) %></p>
                 <% end %>
               </div>
               <strong><%= storefront_money(product.price_cents, product.currency) %></strong>
