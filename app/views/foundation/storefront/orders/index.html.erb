@@ -1,0 +1,16 @@
+<% title "Past orders" %>
+<section class="md-section"><div class="md-page md-page--narrow md-stack">
+  <div><p class="md-section__eyebrow">Your account</p><h1>Past orders</h1><p>Every order placed from your signed-in account.</p></div>
+  <% if @orders.any? %>
+    <div class="md-list">
+      <% @orders.each do |order| %>
+        <%= link_to storefront_order_path(order.public_reference), class: "md-list-item" do %>
+          <div><strong>Order <%= order.public_reference %></strong><br><span><%= l(order.created_at, format: :long) %></span><br><span class="md-chip"><%= order.state.humanize %></span><% if order.simulated? %> <span class="md-chip">Simulation only</span><% end %></div>
+          <strong><%= storefront_money(order.total_cents, order.currency) %></strong>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="md-card md-card--filled"><h2>No orders yet</h2><p>When you place an order while signed in, it will show up here.</p><%= link_to "Shop coffee", storefront_products_path, class: "md-button md-button--filled" %></div>
+  <% end %>
+</div></section>
