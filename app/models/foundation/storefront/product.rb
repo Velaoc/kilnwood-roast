@@ -25,13 +25,19 @@ module Foundation
       validates :inventory_quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 1_000_000 }
       validates :position, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 1_000_000 }
       validates :currency, format: { with: /\A[A-Z]{3}\z/ }
-      validates :roast_level, inclusion: { in: ROAST_LEVELS, allow_blank: true }
+      # Coffee fields are additive: a database loaded from an older committed
+      # schema (hosted preview, test) may lack the columns until its own
+      # migration or seed run adds them, so nothing here may assume they exist.
+      validates :roast_level, inclusion: { in: ROAST_LEVELS, allow_blank: true },
+        if: -> { respond_to?(:roast_level) }
       validate :safe_external_image_url
       validate :valid_image_attachment
       validate :one_image_source
 
       scope :catalog, -> { where(active: true).where("inventory_quantity > 0").order(:position, :name, :id) }
-      scope :roasted, ->(level) { level.present? ? where(roast_level: level) : all }
+      scope :roasted, ->(level) do
+        level.present? && column_names.include?("roast_level") ? where(roast_level: level) : all
+      end
 
       def available?
         active? && inventory_quantity.positive?
@@ -49,9 +55,9 @@ module Foundation
         self.sku = sku.to_s.strip.upcase
         self.currency = currency.to_s.strip.upcase
         self.description = description.to_s.strip
-        self.origin = origin.to_s.strip.presence
-        self.tasting_notes = tasting_notes.to_s.strip.presence
-        self.roast_level = roast_level.to_s.strip.presence
+        self.origin = origin.to_s.strip.presence if respond_to?(:origin=)
+        self.tasting_notes = tasting_notes.to_s.strip.presence if respond_to?(:tasting_notes=)
+        self.roast_level = roast_level.to_s.strip.presence if respond_to?(:roast_level=)
         self.image_url = image_url.to_s.strip.presence
       end
 
