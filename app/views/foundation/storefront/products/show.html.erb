@@ -5,12 +5,12 @@
     <div class="md-stack">
       <%= link_to "Back to shop", storefront_products_path %>
       <div>
-        <p class="md-section__eyebrow"><%= @product.roast_level&.titleize %> roast · <%= @product.origin %></p>
+        <p class="md-section__eyebrow"><%= @product.try(:roast_level)&.titleize %> roast · <%= @product.try(:origin) %></p>
         <h1><%= @product.name %></h1>
       </div>
       <p><%= simple_format(@product.description, {}, wrapper_tag: "span") %></p>
-      <% if @product.tasting_notes.present? %>
-        <div class="md-card md-card--filled"><strong>Tasting notes</strong><p><%= @product.tasting_notes %></p></div>
+      <% if @product.try(:tasting_notes).present? %>
+        <div class="md-card md-card--filled"><strong>Tasting notes</strong><p><%= @product.try(:tasting_notes) %></p></div>
       <% end %>
       <strong class="storefront-price"><%= storefront_money(@product.price_cents, @product.currency) %></strong>
       <%= form_with url: items_storefront_cart_path(@product), class: "md-stack" do |form| %>
