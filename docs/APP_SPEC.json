@@ -1,0 +1,81 @@
+{
+  "name": "Kilnwood Roast",
+  "purpose": "Online store for a small coffee roaster: whole-bean coffee with photos, roast profiles, and prices; guest-first cart and checkout; customers can see their past orders.",
+  "actors": [
+    "visitor",
+    "signed-in customer",
+    "admin"
+  ],
+  "entities": [
+    {
+      "name": "Product",
+      "relationships": [
+        "has many line items",
+        "belongs to storefront catalog with roast_level/origin/tasting_notes"
+      ]
+    },
+    {
+      "name": "Cart",
+      "relationships": [
+        "session-scoped, holds CartItems keyed by product"
+      ]
+    },
+    {
+      "name": "Order",
+      "relationships": [
+        "belongs to optional user",
+        "has many line items",
+        "stores public_reference, state, totals, legal acceptance"
+      ]
+    },
+    {
+      "name": "LineItem",
+      "relationships": [
+        "belongs to order and product",
+        "snapshots name/sku/price at purchase"
+      ]
+    },
+    {
+      "name": "Customer",
+      "relationships": [
+        "optional signed-in User; guests identified by email for receipt access"
+      ]
+    }
+  ],
+  "workflows": [
+    {
+      "name": "Browse catalog",
+      "description": "Guests browse whole-bean coffees with photos, roast level, origin, tasting notes, and prices; filter by roast (light/medium/dark)."
+    },
+    {
+      "name": "Cart",
+      "description": "Visitors add products to a session cart, update quantities, and remove items without an account."
+    },
+    {
+      "name": "Guest checkout",
+      "description": "Email + legal consent, server-authoritative pricing, Stripe-ready payment via preview simulator (no money moves in demo); signed 24h receipt link after purchase."
+    },
+    {
+      "name": "Past orders",
+      "description": "Signed-in customers see their own order history; guests reach a receipt via signed expiring access link."
+    },
+    {
+      "name": "Admin",
+      "description": "Madmin product/order management: availability, inventory, CSV import, order states."
+    }
+  ],
+  "modules": [
+    "storefront"
+  ],
+  "integrations": [
+    {
+      "name": "Stripe",
+      "demo_adapter": true
+    },
+    {
+      "name": "Unsplash product photography",
+      "demo_adapter": true
+    }
+  ],
+  "seed_demo": "Eight whole-bean coffees (light/medium/dark roasts) with origin, tasting notes, prices, and photography; walkable guest checkout via simulator."
+}
