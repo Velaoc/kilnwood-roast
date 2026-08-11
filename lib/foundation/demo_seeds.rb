@@ -94,9 +94,27 @@ module Foundation
         return 0
       end
 
+      ensure_coffee_columns!
       created = seed_products!
       io.puts("Demo catalog ready: #{PRODUCTS.length} products (#{created} created).")
       created
+    end
+
+    # A hosted preview boots from the committed schema, which predates the
+    # coffee-specific product columns; a production deployment applies the
+    # migration instead. Seeds may run before that migration does, so they
+    # make the columns exist rather than guessing which path the database
+    # came from. Schema migrations stay the canonical source everywhere else.
+    def self.ensure_coffee_columns!
+      connection = Foundation::Storefront::Product.connection
+      return if connection.columns(:storefront_products).map(&:name).include?("roast_level")
+
+      connection.add_column :storefront_products, :roast_level, :string
+      connection.add_column :storefront_products, :origin, :string
+      connection.add_column :storefront_products, :tasting_notes, :string
+      connection.add_check_constraint :storefront_products,
+        "roast_level IS NULL OR roast_level IN ('light', 'medium', 'dark')",
+        name: "storefront_products_roast_level_allowed"
     end
 
     # Upserts by slug so repeated runs converge on the same catalog instead of
