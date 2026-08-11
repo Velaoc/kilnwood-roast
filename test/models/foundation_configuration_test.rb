@@ -45,13 +45,13 @@ class FoundationConfigurationTest < ActiveSupport::TestCase
   test "foundation config template defaults" do
     foundation = Rails.configuration.x.foundation
 
-    assert_equal "Application", foundation[:application_name]
+    assert_equal "Kilnwood Roast", foundation[:application_name]
     assert_match(/\A#\h{6}\z/, foundation[:brand_seed_color])
     # foundation:module storefront
     assert_equal true, foundation[:storefront_enabled]
     assert_equal "digital", foundation[:storefront_fulfillment_mode]
     assert_equal false, foundation[:storefront_commerce_legal_reviewed]
-    assert_equal [], foundation[:storefront_external_image_hosts]
+    assert_equal %w[images.unsplash.com], foundation[:storefront_external_image_hosts]
     # /foundation:module storefront
     assert_equal 90, foundation[:healthcheck_disk_usage_percent_max]
     assert_equal 90, foundation[:healthcheck_memory_usage_percent_max]
