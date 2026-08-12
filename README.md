@@ -3,9 +3,10 @@
 
 Online storefront for a small coffee roaster: sell whole-bean coffee with photos and prices, guest-first cart and checkout, and an order history page customers can reach with an email access link or t
 
-- Site: https://kilnwood-roast.api.holode.xyz
+- Site: https://kilnwood-roast-789b.demo.holode.xyz
 - Support: support@kilnwood-roast.api.holode.xyz
 <!-- /foundation:identity -->
+The demo at the Site URL is a throwaway that wipes daily at 3AM Mexico City — this repository is the durable artifact.
 
 ## What this is
 
